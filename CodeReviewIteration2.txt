@@ -1,0 +1,20 @@
+Code Review:
+Reviewed By:
+Robert Hacker
+Vincent Loignon
+
+Notes:
+-Zombie observer and observable seems a bit broad and the observer is forced to care
+both when the enemy dies in both ways. (Robert)
+-Going off what rob said, your observer pattern should be focused on 1 task and 1 task only if possible(Vincent)
+
+-Factories seem like a clean way to manage multiple types of towers
+
+- Great idea using a strategy pattern for the movement, it really does lend itself well to the situation
+
+- I recommend not declaring a new Point2D every time update is called on FlyMovement. Instead, just override
+the values because you are currently relying on the Garbage collector to cleanup for you.
+
+- Your projectiles seem to go astray from the way you do your factories everywhere else. You have a 
+different factory for each projectile type rather than 1 that creates them all. Perhaps refactor that
+to be consistent with the rest of your factories?

@@ -1,0 +1,9 @@
+Reviewers: Jack Storm, David Johnston
+
+* Great use of Factory with zombie generation
+
+* Follows a consistant coding standard
+
+* Thread.sleep is somewhat inconsistant
+
+* magic numbers exist in a few places
