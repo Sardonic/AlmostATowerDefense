@@ -3,35 +3,33 @@ package game.wave;
 import game.base.GameItem;
 import game.base.Room;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 public class WaveManager {
 	private final int MAX_ZOMBIES_PER_WAVE = 20;
-	private final int FRAMES_BETWEEN_WAVES = 60;
+	private final int FRAMES_BETWEEN_WAVES = 90;
 	private int FRAMES_BETWEEN_ZOMBIES = 2;
 	private int framesUntilNextWave;
 	private int framesUntilNextZombie;
 	private Iterator<GameItem> zombieIter;
-	private int zombiesToSpawn;
 	private int waveNum;
-	private Collection<GameItem> zombiesThisWave;
 	private Room parentRoom;
-	private Wave nextWave;
+	
 
 	public WaveManager(Room parentRoom) {
-		framesUntilNextWave = FRAMES_BETWEEN_WAVES;
+		framesUntilNextWave = 0;//immediatly star sending out zombles no mercy
 		framesUntilNextZombie = FRAMES_BETWEEN_ZOMBIES;
 		waveNum = 1;
-		zombiesToSpawn = waveNum;
 		zombieIter = null;
-		nextWave = new Wave(waveNum, parentRoom);
-		zombiesThisWave = new ArrayList<GameItem>();
 		this.parentRoom = parentRoom;
 	}
 	
 	public void update() {
+		Wave nextWave = new Wave(waveNum, parentRoom);
+		Collection<GameItem> zombiesThisWave;
+		int zombiesToSpawn;
+		
 		framesUntilNextWave--;
 		
 		if (framesUntilNextWave <= 0) {

@@ -1,5 +1,6 @@
 package game.base;
 
+import game.base.GameItem.Tag;
 import game.grid.Grid;
 import game.grid.Path;
 import game.grid.Tile;
@@ -99,7 +100,7 @@ public class Room extends JPanel {
 	
 	public void removeUnit(GameItem unit) {
 		unitsToRemoveAtEndOfFrame.add(unit);
-		if ("zombie".equals(unit.getTag())) {
+		if (Tag.ZOMBIE == unit.getTag()) {//"zombie".equals(unit.getTag()) tags an enum yo, that ain't gonna work
 			Zombie zombie = (Zombie) unit;
 			zombie.removeObserver(user);
 		}
