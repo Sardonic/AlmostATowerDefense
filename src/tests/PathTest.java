@@ -32,4 +32,12 @@ public class PathTest {
 		assertEquals(tile3, testPath.findNextTile(tile2));
 		assertEquals(null, testPath.findNextTile(tile3));
 	}
+	@Test
+	public void findIfItExists() {
+		testPath.addTile(tile1);
+		testPath.addTile(tile2);
+		
+		assertTrue(testPath.doesTileExist(tile1));
+		assertTrue(!testPath.doesTileExist(tile3));
+	}
 }
