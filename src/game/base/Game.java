@@ -88,6 +88,7 @@ public class Game extends JFrame {
 		});
 		
 		add(room);
+		addMouseListener(room);
 		pack();
 		setVisible(true);
 		

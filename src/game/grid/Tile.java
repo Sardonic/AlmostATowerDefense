@@ -1,5 +1,7 @@
 package game.grid;
 
+import game.towers.BaseTower;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Point2D;
@@ -9,11 +11,15 @@ public class Tile {
 	static public final int WIDTH = 64;
 	private Point2D centerPoint;
 	private Color color;
+	private boolean isEmpty;
+	private BaseTower towerReferance;
 	
 	public Tile(Point2D point) {
 		centerPoint = new Point2D.Double();
 		centerPoint.setLocation(point.getX() + WIDTH/2, point.getY() + HEIGHT/2);
 		color = Color.WHITE;
+		isEmpty = true;
+		towerReferance = null;
 	}
 	
 	public Point2D getCenter() {
@@ -22,6 +28,22 @@ public class Tile {
 	
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	public void setEmpty(boolean empty) {
+		isEmpty = empty;
+	}
+	
+	public boolean getEmpty() {
+		return isEmpty;
+	}
+	
+	public void setTower(BaseTower tower) {
+		towerReferance = tower;
+	}
+	
+	public BaseTower getTower() {
+		return towerReferance;
 	}
 	
 	public void draw(Graphics g) {

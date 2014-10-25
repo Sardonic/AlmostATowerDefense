@@ -7,9 +7,12 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 
 public class RocketProjectileFactory implements ProjectileFactory {
+	
+	private final static double SIZE = 5;
+	private final static double SPEED = 7;
 
-	public Projectile makeProjectile(Room parent, Point2D pos, Zombie target) {
-		return new Projectile(parent, pos, target, 3000, 5, Color.RED, 7);
+	public Projectile makeProjectile(Room parent, Point2D pos, Zombie target, int damage) {
+		return new Projectile(parent, pos, target, damage, SIZE, Color.RED, SPEED);
 	}
 
 }

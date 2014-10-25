@@ -4,19 +4,24 @@ import game.base.GameItem.Tag;
 import game.grid.Grid;
 import game.grid.Path;
 import game.grid.Tile;
+import game.towers.BaseTower;
 import game.towers.TowerFactory;
+import game.towers.upgrades.FireRateUpgrade;
+import game.towers.upgrades.RangeUpgrade;
 import game.wave.WaveManager;
 import game.zombies.Zombie;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class Room extends JPanel {
+public class Room extends JPanel implements MouseListener {
 	private final int height;
 	private final int width;
 	
@@ -27,7 +32,8 @@ public class Room extends JPanel {
 	private Grid grid;
 	private Path path;
 	private User user;
-
+	
+	//constructor
 	public Room(int height, int width) {
 		this.height = height;
 		this.width = width;
@@ -45,7 +51,10 @@ public class Room extends JPanel {
 		
 		init();
 	}
-
+	
+	//called in the constructor
+	//this makes the path
+	//totes hardcoded but we ain't no designers so...meh
 	private void makePath() {
 		path = new Path();
 		
@@ -62,6 +71,21 @@ public class Room extends JPanel {
 		path.addTile(grid.getTile(7, 4));
 	}
 	
+	//main game logic
+	//ie initilize and main loop
+	private void init() {
+		placeMachineGunTower(5, 5);
+		placeRocketTower(1, 4);
+	}
+
+	public boolean mainLoop() {
+		waveManager.update();
+		updateAllUnits();
+		
+		return false;
+	}
+	
+	//room's functions
 	public Collection<GameItem> getAllUnitsWithTag(GameItem.Tag tag) {
 		ArrayList<GameItem> unitsWithTag = new ArrayList<GameItem>();
 		
@@ -78,16 +102,61 @@ public class Room extends JPanel {
 		return unitsWithTag;
 	}
 	
-	private void init() {
-		units.add(TowerFactory.makeMachineGunTower(this, grid.getTile(5, 5).getCenter()));
-		units.add(TowerFactory.makeRocketTower(this, grid.getTile(1, 4).getCenter()));
+	private void openBuyMenu(int x, int y) {
+		//TODO buy menu
+		placeMachineGunTower(x, y);
 	}
-
-	public boolean mainLoop() {
-		waveManager.update();
-		updateAllUnits();
+	
+	private void openUpgradeMenu(int x, int y) {
+		//TODO upgrade menu
+		upgradeTower(x, y);
+	}
+	
+	private void placeMachineGunTower(int x, int y) {
+		Tile tile = grid.getTile(x, y);
+		BaseTower tower = TowerFactory.makeMachineGunTower(this, tile.getCenter());
 		
-		return false;
+		unitsToAddAtEndOfFrame.add(tower);
+		tile.setEmpty(false);
+		tile.setTower(tower);
+	}
+	
+	private void placeRocketTower(int x, int y) {
+		Tile tile = grid.getTile(x, y);
+		BaseTower tower = TowerFactory.makeRocketTower(this, tile.getCenter());
+		
+		unitsToAddAtEndOfFrame.add(tower);
+		tile.setEmpty(false);
+		tile.setTower(tower);
+	}
+	
+	private void upgradeTower(int x, int y) {
+		//TODO differentiate between upgrades
+		Tile tile = grid.getTile(x, y);
+		BaseTower tower = tile.getTower();
+		
+		if(tile.getTower() != null) {//should never fail but just in case
+			units.remove(tower);
+			tower = new RangeUpgrade(tower);
+			tile.setTower(tower);
+			units.add(tower);
+		} else {
+			//throw error
+			System.out.println("Error There was no tower there.");
+		}
+	}
+	
+	private void sellTower(int x, int y) {
+		Tile tile = grid.getTile(x, y);
+		
+		if(tile.getTower() != null) {//should never fail but just in case
+			unitsToRemoveAtEndOfFrame.add(tile.getTower());
+			tile.setTower(null);
+			tile.setEmpty(true);
+		} else {
+			//throw error
+			System.out.println("Error There was no tower there.");
+		}
 	}
 
 	public void addUnit(GameItem unit) {
@@ -111,15 +180,6 @@ public class Room extends JPanel {
 			unitsToRemoveAtEndOfFrame.add(unit);
 		}
 	}
-
-	@Override
-	public void paintComponent(Graphics g) {
-		grid.draw(g);
-		for (GameItem unit : units) {
-			unit.draw(g);
-		}
-		user.draw(g);
-	}
 	
 	private void updateAllUnits() {
 		for (GameItem unit : units) {
@@ -140,7 +200,8 @@ public class Room extends JPanel {
 		unitsToAddAtEndOfFrame.clear();
 		unitsToRemoveAtEndOfFrame.clear();
 	}
-
+	
+//getter stuffs
 	public int getHeight() {
 		return height;
 	}
@@ -159,5 +220,49 @@ public class Room extends JPanel {
 	
 	public Path getPath() {
 		return path;
+	}
+	
+	//draw stuff, overridden from Jpanel
+	@Override
+	public void paintComponent(Graphics g) {
+		grid.draw(g);
+		for (GameItem unit : units) {
+			unit.draw(g);
+		}
+		user.draw(g);
+	}
+	
+	//mouse listeners functions
+	public void mouseClicked(MouseEvent e) {
+		int mouseX;
+		int mouseY;
+		
+		mouseX = e.getX() / Tile.WIDTH;
+		//mouseY need to be offset
+		mouseY = (e.getY() - (Tile.HEIGHT/2)) / Tile.HEIGHT;
+		
+		Tile tile = grid.getTile(mouseX, mouseY);
+		
+		if(tile.getEmpty() && !path.doesTileExist(tile)){
+			openBuyMenu(mouseX, mouseY);
+		} else if(!tile.getEmpty() && !path.doesTileExist(tile)) {
+			openUpgradeMenu(mouseX, mouseY);
+		}
+	}
+
+	public void mouseEntered(MouseEvent arg0) {
+		
+	}
+
+	public void mouseExited(MouseEvent arg0) {
+		
+	}
+
+	public void mousePressed(MouseEvent arg0) {
+		
+	}
+
+	public void mouseReleased(MouseEvent arg0) {
+
 	}
 }

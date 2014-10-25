@@ -11,12 +11,13 @@ import java.awt.Graphics;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 
-public class Tower implements GameItem {
+public class Tower implements BaseTower {
 	private Point2D pos;
 	private Point2D center;
 	private double fireRate; // in shots/second (second = 60 frames)
 	private double framesUntilFire;
 	private int range;
+	private int damage;
 	private int width;
 	private int height;
 	private Color color;
@@ -24,7 +25,7 @@ public class Tower implements GameItem {
 	private Zombie target;
 	private ProjectileFactory projectileFactory;
 	
-	public Tower(Room parent, Point2D position, ProjectileFactory projectileFactory, double fireRate, int range, int width, int height, Color color) {
+	public Tower(Room parent, Point2D position, ProjectileFactory projectileFactory, double fireRate, int range, int width, int height, int damage, Color color) {
 		center = position;
 		this.projectileFactory = projectileFactory;
 		this.pos = new Point2D.Double(position.getX() - width/2, position.getY() - height/2);
@@ -33,6 +34,7 @@ public class Tower implements GameItem {
 		this.range = range;
 		this.width = width;
 		this.height = height;
+		this.damage = damage;
 		this.color = color;
 		this.parentRoom = parent;
 		target = null;
@@ -65,7 +67,7 @@ public class Tower implements GameItem {
 		
 		if (target != null) {
 			if (framesUntilFire <= 0) {
-				parentRoom.addUnit(projectileFactory.makeProjectile(parentRoom, new Point2D.Double(center.getX(), center.getY()), target));
+				parentRoom.addUnit(projectileFactory.makeProjectile(parentRoom, new Point2D.Double(center.getX(), center.getY()), target, damage));
 				framesUntilFire += Game.IDEAL_FPS / fireRate;
 			}
 		}
@@ -104,7 +106,7 @@ public class Tower implements GameItem {
 		return fireRate;
 	}
 
-	public void setFireRate(int fireRate) {
+	public void setFireRate(double fireRate) {
 		this.fireRate = fireRate;
 	}
 
@@ -142,6 +144,14 @@ public class Tower implements GameItem {
 
 	public void setPos(Point2D pos) {
 		this.pos = pos;
+	}
+
+	public int getDamage() {
+		return damage;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
 	}
 
 

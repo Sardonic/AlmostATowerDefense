@@ -60,6 +60,16 @@ public class Path {
 		}
 	}
 	
+	public boolean doesTileExist(Tile lookingFor) {
+		for(Tile tile : tiles) {
+			if(tile == lookingFor) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public Tile getHighestTile() {
 		return highestTile;
 	}
