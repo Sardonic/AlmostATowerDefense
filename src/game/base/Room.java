@@ -47,10 +47,6 @@ public class Room extends JPanel implements MouseListener {
 		unitsToAddAtEndOfFrame = new ArrayList<GameItem>();
 		unitsToRemoveAtEndOfFrame = new ArrayList<GameItem>();
 		waveManager = new WaveManager(this);
-		
-		// This smells of side-effects and is
-		// making the tests nightmarish to maintian. Delorted.
-		//addDefaultTowers();
 	}
 	
 	//called in the constructor
