@@ -28,14 +28,15 @@ public class RoomTests {
 	
 	@Test
 	public void testAddUnit() {
-		// Size should start at 2, for the default towers
+		// Size should start at 0, because we fixed
+		// the side effect problem.
 		room.addUnit(zombie1);
 		room.addAndRemoveUnits();
-		assertEquals(3, room.getUnits().size());
+		assertEquals(1, room.getUnits().size());
 		
 		room.addUnit(zombie2);
 		room.addAndRemoveUnits();
-		assertEquals(4, room.getUnits().size());
+		assertEquals(2, room.getUnits().size());
 	}
 	
 	@Test
@@ -44,7 +45,7 @@ public class RoomTests {
 		room.addUnit(zombie2);
 		room.removeUnit(zombie1);
 		room.addAndRemoveUnits();
-		assertEquals(3, room.getUnits().size());
+		assertEquals(1, room.getUnits().size());
 	}
 	
 	@Test
@@ -59,7 +60,7 @@ public class RoomTests {
 		room.removeUnits(zombies);
 		room.addAndRemoveUnits();
 		
-		assertEquals(3, room.getUnits().size());
+		assertEquals(1, room.getUnits().size());
 	}
 	
 	@Test

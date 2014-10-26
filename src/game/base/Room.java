@@ -6,7 +6,6 @@ import game.grid.Path;
 import game.grid.Tile;
 import game.towers.BaseTower;
 import game.towers.TowerFactory;
-import game.towers.upgrades.FireRateUpgrade;
 import game.towers.upgrades.RangeUpgrade;
 import game.wave.WaveManager;
 import game.zombies.Zombie;
@@ -49,7 +48,9 @@ public class Room extends JPanel implements MouseListener {
 		unitsToRemoveAtEndOfFrame = new ArrayList<GameItem>();
 		waveManager = new WaveManager(this);
 		
-		init();
+		// This smells of side-effects and is
+		// making the tests nightmarish to maintian. Delorted.
+		//addDefaultTowers();
 	}
 	
 	//called in the constructor
@@ -73,7 +74,7 @@ public class Room extends JPanel implements MouseListener {
 	
 	//main game logic
 	//ie initilize and main loop
-	private void init() {
+	public void addDefaultTowers() {
 		placeMachineGunTower(5, 5);
 		placeRocketTower(1, 4);
 	}

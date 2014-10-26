@@ -27,6 +27,7 @@ public class Game extends JFrame {
 		this.width = width;
 		this.height = height;
 		room  = new Room(width, height);
+		room.addDefaultTowers();
 		quit = false;
 	}
 	
@@ -72,7 +73,6 @@ public class Game extends JFrame {
 		addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					System.out.println("Esc was pressed.");
 					quit = true;
 				}
 			}
