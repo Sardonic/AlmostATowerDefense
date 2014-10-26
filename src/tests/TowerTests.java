@@ -17,6 +17,7 @@ import game.base.Room;
 import game.grid.Path;
 import game.towers.BaseTower;
 import game.towers.TowerFactory;
+import game.towers.towertypes.MachineGunTower;
 import game.towers.upgrades.DamageUpgrade;
 import game.towers.upgrades.FireRateUpgrade;
 import game.zombies.Zombie;
@@ -43,12 +44,12 @@ public class TowerTests {
 	
 	@Test
 	public void testMachineGunFireRate() {
-		assertEquals(TowerFactory.MACHINEGUNFIRERATE, machineGun.getFireRate(), 0);
+		assertEquals(MachineGunTower.FIRERATE, machineGun.getFireRate(), 0);
 	}
 	
 	@Test
 	public void testMachineGunRange() {
-		assertEquals(TowerFactory.MACHINEGUNRANGE, machineGun.getRange());
+		assertEquals(MachineGunTower.RANGE, machineGun.getRange());
 	}
 	
 	@Test
@@ -60,29 +61,37 @@ public class TowerTests {
 	@Test
 	public void testFireRateUpgrade() {
 		double prevFireRate = machineGun.getFireRate();
+		int prevValue = machineGun.getMoneyValue();
 		
 		machineGun = new FireRateUpgrade(machineGun);
 		
 		assertEquals(prevFireRate * 1.5, machineGun.getFireRate(), 0.0001);
+		assertEquals((int)(prevValue * 1.5), machineGun.getMoneyValue());
 		
 		prevFireRate = machineGun.getFireRate();
+		prevValue = machineGun.getMoneyValue();
 		
 		machineGun = new FireRateUpgrade(machineGun);
 		
 		assertEquals(prevFireRate * 1.5, machineGun.getFireRate(), 0.0001);
+		assertEquals((int)(prevValue * 1.5), machineGun.getMoneyValue());
 	}
 	@Test
 	public void testDamageUpgrade() {
 		int prevDamage = machineGun.getDamage();
+		int prevValue = machineGun.getMoneyValue();
 		
 		machineGun = new DamageUpgrade(machineGun);
 		
-		assertEquals((int)(prevDamage * 1.25), machineGun.getDamage(), 0.001);
+		assertEquals((int)(prevDamage * 1.25), machineGun.getDamage());
+		assertEquals((int)(prevValue * 1.25), machineGun.getMoneyValue());
 		
 		prevDamage = machineGun.getDamage();
+		prevValue = machineGun.getMoneyValue();
 		
 		machineGun = new DamageUpgrade(machineGun);
 		
-		assertEquals((int)(prevDamage * 1.25), machineGun.getDamage(), 0.001);
+		assertEquals((int)(prevDamage * 1.25), machineGun.getDamage());
+		assertEquals((int)(prevValue * 1.25), machineGun.getMoneyValue());
 	}
 }

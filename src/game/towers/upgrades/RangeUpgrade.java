@@ -14,7 +14,8 @@ public class RangeUpgrade implements TowerModifier {
 	
 	public RangeUpgrade(BaseTower tower) {
 		baseTower = tower;
-		baseTower.setRange((int) (getRange() * modifier));
+		setRange((int) (getRange() * modifier));
+		setMoneyValue((int) (getMoneyValue() * modifier));
 	}
 
 	public double getFireRate() {
@@ -61,4 +62,11 @@ public class RangeUpgrade implements TowerModifier {
 		baseTower.setDamage(damage);
 	}
 
+	public int getMoneyValue() {
+		return baseTower.getMoneyValue();
+	}
+
+	public void setMoneyValue(int value) {
+		baseTower.setMoneyValue(value);
+	}
 }

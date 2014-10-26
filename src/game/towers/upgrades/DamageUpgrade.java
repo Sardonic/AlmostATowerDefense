@@ -14,7 +14,8 @@ public class DamageUpgrade implements TowerModifier {
 	
 	public DamageUpgrade(BaseTower tower) {
 		baseTower = tower;
-		baseTower.setDamage((int) (getDamage() * modifier));
+		setDamage((int) (getDamage() * modifier));
+		setMoneyValue((int) (getMoneyValue() * modifier));
 	}
 	
 	public double getFireRate() {
@@ -61,4 +62,11 @@ public class DamageUpgrade implements TowerModifier {
 		baseTower.setDamage(damage);
 	}
 
+	public int getMoneyValue() {
+		return baseTower.getMoneyValue();
+	}
+
+	public void setMoneyValue(int value) {
+		baseTower.setMoneyValue(value);
+	}
 }

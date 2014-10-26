@@ -9,7 +9,12 @@ import game.zombies.Zombie;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
+
+import javax.imageio.ImageIO;
 
 public class Tower implements BaseTower {
 	private Point2D pos;
@@ -20,24 +25,31 @@ public class Tower implements BaseTower {
 	private int damage;
 	private int width;
 	private int height;
+	private int moneyValue;
 	private Color color;
 	private Room parentRoom;
 	private Zombie target;
 	private ProjectileFactory projectileFactory;
+	private BufferedImage image;
 	
-	public Tower(Room parent, Point2D position, ProjectileFactory projectileFactory, double fireRate, int range, int width, int height, int damage, Color color) {
+	public Tower(Room parent, Point2D position, ProjectileFactory projectileFactory, double fireRate, int range, int width, int height, int damage, int moneyVal, Color color) {
 		center = position;
 		this.projectileFactory = projectileFactory;
-		this.pos = new Point2D.Double(position.getX() - width/2, position.getY() - height/2);
+		this.pos = new Point2D.Double(position.getX() - width, position.getY() - height);
 		this.fireRate = fireRate;
 		this.framesUntilFire = 0;
 		this.range = range;
 		this.width = width;
 		this.height = height;
 		this.damage = damage;
+		moneyValue = moneyVal;
 		this.color = color;
 		this.parentRoom = parent;
 		target = null;
+		try {
+			image = ImageIO.read(new File("Charizard.png"));
+		} catch (IOException e) {
+		}
 	}
 	
 	public Tag getTag() {
@@ -95,10 +107,11 @@ public class Tower implements BaseTower {
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(color);
-		g.fillOval((int)pos.getX(), (int)pos.getY(), width, height);
+		//g.setColor(color);
+		//g.fillOval((int)pos.getX(), (int)pos.getY(), width, height);
 		g.setColor(Color.black);
 		g.drawOval((int)pos.getX() - (range) + (width / 2), (int)pos.getY() - (range) + (height / 2), range * 2, range * 2);
+		g.drawImage(image, (int)pos.getX(), (int)pos.getY(), width*2, height*2, null);
 	}
 	
 	//getters and setters
@@ -152,6 +165,14 @@ public class Tower implements BaseTower {
 
 	public void setDamage(int damage) {
 		this.damage = damage;
+	}
+
+	public int getMoneyValue() {
+		return moneyValue;
+	}
+
+	public void setMoneyValue(int value) {
+		moneyValue = value;
 	}
 
 

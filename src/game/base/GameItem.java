@@ -12,6 +12,7 @@ public interface GameItem {
 	enum Tag {
 		ZOMBIE,
 		TOWER,
-		PROJECTILE
+		PROJECTILE,
+		MENU
 	}
 }

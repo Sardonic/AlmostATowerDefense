@@ -2,7 +2,6 @@ package game.zombies;
 
 import game.base.Room;
 import game.grid.Path;
-import game.grid.Tile;
 import game.zombies.zombietypes.Fatty;
 import game.zombies.zombietypes.Imp;
 import game.zombies.zombietypes.Runner;

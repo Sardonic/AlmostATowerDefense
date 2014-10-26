@@ -4,6 +4,7 @@ import game.base.GameItem.Tag;
 import game.grid.Grid;
 import game.grid.Path;
 import game.grid.Tile;
+import game.menus.PurchaseMenu;
 import game.towers.BaseTower;
 import game.towers.TowerFactory;
 import game.towers.upgrades.RangeUpgrade;
@@ -14,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -31,6 +33,7 @@ public class Room extends JPanel implements MouseListener {
 	private Grid grid;
 	private Path path;
 	private User user;
+	private boolean isMenuOpen;
 	
 	//constructor
 	public Room(int height, int width) {
@@ -47,6 +50,8 @@ public class Room extends JPanel implements MouseListener {
 		unitsToAddAtEndOfFrame = new ArrayList<GameItem>();
 		unitsToRemoveAtEndOfFrame = new ArrayList<GameItem>();
 		waveManager = new WaveManager(this);
+		
+		isMenuOpen = false;
 	}
 	
 	//called in the constructor
@@ -96,34 +101,59 @@ public class Room extends JPanel implements MouseListener {
 	}
 	
 	private void openBuyMenu(int x, int y) {
-		//TODO buy menu
-		placeMachineGunTower(x, y);
+		if (!isMenuOpen) {
+			GameItem purchaseMenu = new PurchaseMenu(this, grid.getTile(x, y).getULCorner());
+			unitsToAddAtEndOfFrame.add(purchaseMenu);
+		}
 	}
 	
 	private void openUpgradeMenu(int x, int y) {
 		//TODO upgrade menu
-		upgradeTower(x, y);
+		if (!isMenuOpen) {
+			int towerValue = grid.getTile(x, y).getTower().getMoneyValue();
+			
+			if(user.getMoney() > towerValue)
+			{
+				upgradeTower(x, y);
+				user.spendMoney(towerValue);
+			}
+		}
 	}
 	
-	private void placeMachineGunTower(int x, int y) {
+	public void placeMachineGunTower(int x, int y) {
 		Tile tile = grid.getTile(x, y);
-		BaseTower tower = TowerFactory.makeMachineGunTower(this, tile.getCenter());
-		
-		unitsToAddAtEndOfFrame.add(tower);
-		tile.setEmpty(false);
-		tile.setTower(tower);
+		if (tile.isEmpty()) {
+			BaseTower tower = TowerFactory.makeMachineGunTower(this, tile.getCenter());
+			
+			unitsToAddAtEndOfFrame.add(tower);
+			tile.setEmpty(false);
+			tile.setTower(tower);
+		}
 	}
 	
-	private void placeRocketTower(int x, int y) {
+	public void placeRocketTower(int x, int y) {
 		Tile tile = grid.getTile(x, y);
-		BaseTower tower = TowerFactory.makeRocketTower(this, tile.getCenter());
-		
-		unitsToAddAtEndOfFrame.add(tower);
-		tile.setEmpty(false);
-		tile.setTower(tower);
+		if (tile.isEmpty()) {
+			BaseTower tower = TowerFactory.makeRocketTower(this, tile.getCenter());
+			
+			unitsToAddAtEndOfFrame.add(tower);
+			tile.setEmpty(false);
+			tile.setTower(tower);
+		}
 	}
 	
-	private void upgradeTower(int x, int y) {
+	public void placeFireTower(int x, int y) {
+		Tile tile = grid.getTile(x, y);
+		if (tile.isEmpty()) {
+			BaseTower tower = TowerFactory.makeFireTower(this, tile.getCenter());
+			
+			unitsToAddAtEndOfFrame.add(tower);
+			tile.setEmpty(false);
+			tile.setTower(tower);
+		}
+	}
+	
+	public void upgradeTower(int x, int y) {
 		//TODO differentiate between upgrades
 		Tile tile = grid.getTile(x, y);
 		BaseTower tower = tile.getTower();
@@ -139,7 +169,7 @@ public class Room extends JPanel implements MouseListener {
 		}
 	}
 	
-	private void sellTower(int x, int y) {
+	public void sellTower(int x, int y) {
 		Tile tile = grid.getTile(x, y);
 		
 		if(tile.getTower() != null) {//should never fail but just in case
@@ -148,7 +178,7 @@ public class Room extends JPanel implements MouseListener {
 			tile.setEmpty(true);
 		} else {
 			//throw error
-			System.out.println("Error There was no tower there.");
+			System.err.println("Error There was no tower there.");
 		}
 	}
 
@@ -165,6 +195,9 @@ public class Room extends JPanel implements MouseListener {
 		if (Tag.ZOMBIE == unit.getTag()) {//"zombie".equals(unit.getTag()) tags an enum yo, that ain't gonna work
 			Zombie zombie = (Zombie) unit;
 			zombie.removeObserver(user);
+		}
+		else if (Tag.MENU == unit.getTag()) {
+			isMenuOpen = false;
 		}
 	}
 	
@@ -194,6 +227,18 @@ public class Room extends JPanel implements MouseListener {
 		unitsToRemoveAtEndOfFrame.clear();
 	}
 	
+	public Point2D getPointRelativeToUL(Point2D ULCorner, Point2D point) {
+		Point2D localSpacePoint;
+		double localX, localY;
+		
+		localX = point.getX() - ULCorner.getX() + Grid.X_OFFSET;
+		// Y needs to be offset
+		localY = point.getY() - ULCorner.getY() + Grid.Y_OFFSET;
+		localSpacePoint = new Point2D.Double(localX, localY);
+		
+		return localSpacePoint;
+	}
+	
 //getter stuffs
 	public int getHeight() {
 		return height;
@@ -215,6 +260,10 @@ public class Room extends JPanel implements MouseListener {
 		return path;
 	}
 	
+	public User getUser() {
+		return user;
+	}
+	
 	//draw stuff, overridden from Jpanel
 	@Override
 	public void paintComponent(Graphics g) {
@@ -230,15 +279,14 @@ public class Room extends JPanel implements MouseListener {
 		int mouseX;
 		int mouseY;
 		
-		mouseX = e.getX() / Tile.WIDTH;
-		//mouseY need to be offset
-		mouseY = (e.getY() - (Tile.HEIGHT/2)) / Tile.HEIGHT;
+		mouseX = (e.getX() - Grid.X_OFFSET) / Tile.WIDTH;
+		mouseY = (e.getY() - Grid.Y_OFFSET) / Tile.HEIGHT;
 		
 		Tile tile = grid.getTile(mouseX, mouseY);
 		
-		if(tile.getEmpty() && !path.doesTileExist(tile)){
+		if(tile.isEmpty() && !path.doesTileExist(tile)){
 			openBuyMenu(mouseX, mouseY);
-		} else if(!tile.getEmpty() && !path.doesTileExist(tile)) {
+		} else if(!tile.isEmpty() && !path.doesTileExist(tile)) {
 			openUpgradeMenu(mouseX, mouseY);
 		}
 	}

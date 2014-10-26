@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class Grid {
 	ArrayList<ArrayList<Tile>> grid;
-	private final int Y_OFFSET = 25;
-	private final int X_OFFSET = 2;
+	public static final int Y_OFFSET = 25;
+	public static final int X_OFFSET = 2;
 	int width;
 	int height;
 	

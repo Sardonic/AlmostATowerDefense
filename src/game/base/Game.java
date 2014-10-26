@@ -3,10 +3,10 @@ package game.base;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
@@ -33,58 +33,25 @@ public class Game extends JFrame {
 	
 	private void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(new Dimension(width, height));
+		setPreferredSize(new Dimension(width, height));
 		setResizable(false);
 		setIgnoreRepaint(true); // I'll handle the repaints myself, thank you.
 		setBackground(Color.WHITE);
 		
 		// Exit cleanly when the window is closed.
-		addWindowListener(new WindowListener() {
-			public void windowActivated(WindowEvent arg0) {
-				
-			}
-
-			public void windowClosed(WindowEvent arg0) {
-				
-			}
-
+		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent arg0) {
 				quit = true;
-			}
-
-			public void windowDeactivated(WindowEvent arg0) {
-				
-			}
-
-			public void windowDeiconified(WindowEvent arg0) {
-				
-			}
-
-			public void windowIconified(WindowEvent arg0) {
-				
-			}
-
-			public void windowOpened(WindowEvent arg0) {
-				
 			}
 		});
 		
 		// Leave the game when esc is pressed
-		addKeyListener(new KeyListener() {
+		addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					quit = true;
 				}
 			}
-
-			public void keyReleased(KeyEvent arg0) {
-				
-			}
-
-			public void keyTyped(KeyEvent arg0) {
-				
-			}
-			
 		});
 		
 		add(room);

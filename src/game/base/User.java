@@ -21,7 +21,7 @@ public class User implements ZombieObserver {
 	private int health;
 	
 	public User() {
-		money = 0;
+		money = 1000000;
 		health = 50;
 	}
 
@@ -43,6 +43,10 @@ public class User implements ZombieObserver {
 	
 	public int getMoney() {
 		return money;
+	}
+	
+	public void spendMoney(int moneySpent) {
+		money -= moneySpent;
 	}
 	
 	public int getHealth() {

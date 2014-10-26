@@ -10,5 +10,7 @@ public interface BaseTower extends GameItem {
 	void setRange(int range);
 	int getDamage();
 	void setDamage(int damage);
+	int getMoneyValue();
+	void setMoneyValue(int value);
 	Zombie acquireClosestZombie();
 }
