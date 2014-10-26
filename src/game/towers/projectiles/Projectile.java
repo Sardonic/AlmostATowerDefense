@@ -37,10 +37,9 @@ public class Projectile implements GameItem {
 	}
 
 	public void update() {
-		// This function doesn't seem to calculate distance to target twice, but maybe it's just very subtle. Could you explain further?
 		double meToThemX = target.getPos().getX() - pos.getX();
 		double meToThemY = target.getPos().getY() - pos.getY();
-		double dist = Point2D.distance(target.getPos().getX(), target.getPos().getY(), pos.getX(), pos.getY());
+		double dist = Math.sqrt(meToThemX * meToThemX + meToThemY * meToThemY);
 		double vx = (meToThemX / dist) * speed;
 		double vy = (meToThemY / dist) * speed;
 		

@@ -86,10 +86,6 @@ public class Room extends JPanel implements MouseListener {
 	public Collection<GameItem> getAllUnitsWithTag(GameItem.Tag tag) {
 		ArrayList<GameItem> unitsWithTag = new ArrayList<GameItem>();
 		
-		// This is O(n) complexity. For O(1), we'd need a map
-		// object (or other associative container) to handle the
-		// caching of tagged objects. If we end up having a lot of
-		// units, this might become necessary, but it is much more complex to maintain.
 		for (GameItem unit : units) {
 			if (unit.getTag() == tag) {
 				unitsWithTag.add(unit);

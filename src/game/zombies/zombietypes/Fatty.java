@@ -16,7 +16,11 @@ public class Fatty extends Zombie {
 	private final static int MUNNEY = 5;
 	private final static Color COLOR = Color.YELLOW;
 	
-	public Fatty(Room parent, Point2D pos, Path path) {
+	public Fatty(Room parent, Path path, Point2D pos) {
 		super(parent, pos, SIZE, SIZE, HEALTH, SPEED, COLOR, MUNNEY, new FollowPathMovement(path));
+	}
+	
+	public Fatty(Room parent, Path path) {
+		this(parent, path, path.getDefaultStartLocation());
 	}
 }

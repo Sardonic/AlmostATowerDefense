@@ -16,7 +16,11 @@ public class Runner extends Zombie {
 	private final static int MUNNEY = 10;
 	private final static Color COLOR = Color.GREEN;
 	
-	public Runner(Room parent, Point2D pos, Path path) {
+	public Runner(Room parent, Path path, Point2D pos) {
 		super(parent, pos, SIZE, SIZE, HEALTH, SPEED, COLOR, MUNNEY, new FollowPathMovement(path));
+	}
+	
+	public Runner(Room parent, Path path) {
+		this(parent, path, path.getDefaultStartLocation());
 	}
 }

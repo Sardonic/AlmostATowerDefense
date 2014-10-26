@@ -10,6 +10,7 @@ public class WaveManager {
 	private final int MAX_ZOMBIES_PER_WAVE = 20;
 	private final int FRAMES_BETWEEN_WAVES = 90;
 	private int FRAMES_BETWEEN_ZOMBIES = 2;
+	
 	private int framesUntilNextWave;
 	private int framesUntilNextZombie;
 	private Iterator<GameItem> zombieIter;
@@ -26,18 +27,16 @@ public class WaveManager {
 	}
 	
 	public void update() {
-		Wave nextWave = new Wave(waveNum, parentRoom);
-		Collection<GameItem> zombiesThisWave;
-		int zombiesToSpawn;
 		
 		framesUntilNextWave--;
 		
 		if (framesUntilNextWave <= 0) {
-			zombiesThisWave = nextWave.getZombies();
+			int zombiesToSpawn = Math.min(waveNum, MAX_ZOMBIES_PER_WAVE);
+			Wave nextWave = new Wave(zombiesToSpawn, parentRoom);
+			Collection<GameItem> zombiesThisWave = nextWave.getZombies();
+			
 			zombieIter = zombiesThisWave.iterator();
 			waveNum++;
-			zombiesToSpawn = Math.min(waveNum, MAX_ZOMBIES_PER_WAVE);
-			nextWave = new Wave(zombiesToSpawn, parentRoom);
 			framesUntilNextWave = FRAMES_BETWEEN_WAVES;
 		}
 		

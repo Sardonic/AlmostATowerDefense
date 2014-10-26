@@ -16,29 +16,18 @@ public class ZombieFactory {
 		
 	}
 	public static Zombie makeRunner(Room parent, Path path) {
-		return new Runner(parent, getStartLocation(path), path);
+		return new Runner(parent, path);
 	}
 	
 	public static Zombie makeWalker(Room parent, Path path) {
-		return new Walker(parent, getStartLocation(path), path);
+		return new Walker(parent, path);
 	}
 	
 	public static Zombie makeFatty(Room parent, Path path) {
-		return new Fatty(parent, getStartLocation(path), path);
+		return new Fatty(parent, path);
 	}
 	
 	public static Zombie makeImp(Room parent, Point2D pos) {
 		return new Imp(parent, pos);
-	}
-	
-	private static Point2D getStartLocation(Path path) {
-		Tile firstTile = path.getFirstTile();
-		if (firstTile != null) {
-			Point2D firstTileCenter = path.getFirstTile().getCenter();
-			return new Point2D.Double(firstTileCenter.getX() - Tile.WIDTH, firstTileCenter.getY());
-		}
-		else {
-			return new Point2D.Double();
-		}
 	}
 }

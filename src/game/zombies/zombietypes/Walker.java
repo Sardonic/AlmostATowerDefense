@@ -16,8 +16,11 @@ public class Walker extends Zombie {
 	private final static int MUNNEY = 5;
 	private final static Color COLOR = Color.BLUE;
 
-	public Walker(Room parent, Point2D pos, Path path) {
+	public Walker(Room parent, Path path, Point2D pos) {
 		super(parent, pos, SIZE, SIZE, HEALTH, SPEED, COLOR, MUNNEY, new FollowPathMovement(path));
 	}
 
+	public Walker(Room parent, Path path) {
+		this(parent, path, path.getDefaultStartLocation());
+	}
 }

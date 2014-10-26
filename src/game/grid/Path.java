@@ -1,6 +1,7 @@
 package game.grid;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Path {
@@ -68,6 +69,17 @@ public class Path {
 		}
 		
 		return false;
+	}
+	
+	public Point2D getDefaultStartLocation() {
+		Tile firstTile = getFirstTile();
+		if (firstTile != null) {
+			Point2D firstTileCenter = firstTile.getCenter();
+			return new Point2D.Double(firstTileCenter.getX() - Tile.WIDTH, firstTileCenter.getY());
+		}
+		else {
+			return new Point2D.Double();
+		}
 	}
 	
 	public Tile getHighestTile() {
