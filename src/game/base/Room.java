@@ -139,7 +139,7 @@ public class Room extends JPanel implements MouseListener {
 		}
 	}
 	
-	private void sellTower(int x, int y) {
+	public void sellTower(int x, int y) {
 		Tile tile = grid.getTile(x, y);
 		
 		if(tile.getTower() != null) {//should never fail but just in case
