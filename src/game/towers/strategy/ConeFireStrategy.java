@@ -15,6 +15,7 @@ public class ConeFireStrategy implements TowerStrategy {
 	private Zombie target;
 	public final static double CONE_ANGLE = Math.PI / 2;
 	public final static double CONE_HALFANGLE = CONE_ANGLE / 2;
+	private final static int PARTICLES_PER_FRAME = 3;
 	private int framesUntilDamage;
 	
 	public ConeFireStrategy() {
@@ -48,12 +49,7 @@ public class ConeFireStrategy implements TowerStrategy {
 			double towerX = tower.getPos().getX();
 			double towerY = tower.getPos().getY();
 			double theta = Math.atan2(targetY - towerY, targetX - towerX);
-			FireParticle p1 = new FireParticle(parentRoom, tower.getCenter(), theta, CONE_HALFANGLE, tower.getRange());
-			FireParticle p2 = new FireParticle(parentRoom, tower.getCenter(), theta, CONE_HALFANGLE, tower.getRange());
-			FireParticle p3 = new FireParticle(parentRoom, tower.getCenter(), theta, CONE_HALFANGLE, tower.getRange());
-			parentRoom.addUnit(p1);
-			parentRoom.addUnit(p2);
-			parentRoom.addUnit(p3);
+			createParticles(parentRoom, tower.getCenter(), theta, CONE_HALFANGLE, tower.getRange(), PARTICLES_PER_FRAME);
 			
 			if (framesUntilDamage <= 0) {
 				Collection<GameItem> zombies = tower.getParentRoom().getAllUnitsWithTag(Tag.ZOMBIE);
@@ -74,6 +70,13 @@ public class ConeFireStrategy implements TowerStrategy {
 					}
 				}
 			}
+		}
+	}
+	
+	private void createParticles(Room room, Point2D center, double orientation, double angleVariance, double distance, int num) {
+		for (int i = 0; i < num; i++) {
+			FireParticle p = new FireParticle(room, center, orientation, angleVariance, distance);
+			room.addUnit(p);
 		}
 	}
 	
