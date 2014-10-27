@@ -1,7 +1,6 @@
 package game.towers.towertypes;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.geom.Point2D;
 
 import game.base.Room;
@@ -16,7 +15,6 @@ public class FireTower extends Tower {
 	public final static int DAMAGE = 1;
 	public final static int VALUE = 2000;
 	public final static Color COLOR = Color.ORANGE;
-	private ConeFireStrategy strategy;
 
 	public FireTower(Room parent, Point2D position) {
 		super(parent, position, new ConeFireStrategy(), FIRERATE, RANGE, SIZE, SIZE, DAMAGE, VALUE, COLOR);
