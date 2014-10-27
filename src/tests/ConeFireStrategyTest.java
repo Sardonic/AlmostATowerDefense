@@ -4,34 +4,30 @@ import java.awt.geom.Point2D;
 
 import game.towers.strategy.ConeFireStrategy;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class ConeFireStrategyTest {
-	private ConeFireStrategy strategy;
-
-	@Before
-	public void init() {
-		strategy = new ConeFireStrategy();
-	}
 	
 	@Test
 	public void testAngle() {
-		Point2D p0 = new Point2D.Double(0, 0);
-		Point2D p1 = new Point2D.Double(0, 1);
-		Point2D p2 = new Point2D.Double(0, 0.5);
-		assertTrue(strategy.isZombieInCone(p2, p1, p0));
+		Point2D towerCenter = new Point2D.Double(0, 0);
+		Point2D targetZombie = new Point2D.Double(0, 1);
+		Point2D testZombie = new Point2D.Double(0, 0.5);
+		double angleCenter = Math.atan2(targetZombie.getY() - towerCenter.getY(), targetZombie.getX() - towerCenter.getX());
+		assertTrue(ConeFireStrategy.isZombieInAngle(angleCenter, testZombie, towerCenter, ConeFireStrategy.CONE_HALFANGLE));
 		
-		p0 = new Point2D.Double(0, 0);
-		p1 = new Point2D.Double(-1, 0);
-		p2 = new Point2D.Double(0, 1);
-		assertFalse(strategy.isZombieInCone(p2, p1, p0));
+		towerCenter = new Point2D.Double(0, 0);
+		targetZombie = new Point2D.Double(-1, 0);
+		testZombie = new Point2D.Double(0, 1);
+		angleCenter = Math.atan2(targetZombie.getY() - towerCenter.getY(), targetZombie.getX() - towerCenter.getX());
+		assertFalse(ConeFireStrategy.isZombieInAngle(angleCenter, testZombie, towerCenter, ConeFireStrategy.CONE_HALFANGLE));
 		
-		p0 = new Point2D.Double(0, 0);
-		p1 = new Point2D.Double(-1, 0);
-		p2 = new Point2D.Double(-0.5, 0.2);
-		assertTrue(strategy.isZombieInCone(p2, p1, p0));
+		towerCenter = new Point2D.Double(0, 0);
+		targetZombie = new Point2D.Double(-1, 0);
+		testZombie = new Point2D.Double(-0.5, 0.2);
+		angleCenter = Math.atan2(targetZombie.getY() - towerCenter.getY(), targetZombie.getX() - towerCenter.getX());
+		assertTrue(ConeFireStrategy.isZombieInAngle(angleCenter, testZombie, towerCenter, ConeFireStrategy.CONE_HALFANGLE));
 	}
 }

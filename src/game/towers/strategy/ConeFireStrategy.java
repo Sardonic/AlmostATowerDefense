@@ -16,7 +16,6 @@ public class ConeFireStrategy implements TowerStrategy {
 	public final static double CONE_ANGLE = Math.PI / 2;
 	public final static double CONE_HALFANGLE = CONE_ANGLE / 2;
 	private int framesUntilDamage;
-	//private ParticleFactory pFactory;
 	
 	public ConeFireStrategy() {
 		target = null;
@@ -48,10 +47,10 @@ public class ConeFireStrategy implements TowerStrategy {
 			double targetY = target.getPos().getY();
 			double towerX = tower.getPos().getX();
 			double towerY = tower.getPos().getY();
-			double x = Math.atan2(targetY - towerY, targetX - towerX);
-			FireParticle p1 = new FireParticle(tower.getCenter(), x, CONE_HALFANGLE);
-			FireParticle p2 = new FireParticle(tower.getCenter(), x, CONE_HALFANGLE);
-			FireParticle p3 = new FireParticle(tower.getCenter(), x, CONE_HALFANGLE);
+			double theta = Math.atan2(targetY - towerY, targetX - towerX);
+			FireParticle p1 = new FireParticle(parentRoom, tower.getCenter(), theta, CONE_HALFANGLE, tower.getRange());
+			FireParticle p2 = new FireParticle(parentRoom, tower.getCenter(), theta, CONE_HALFANGLE, tower.getRange());
+			FireParticle p3 = new FireParticle(parentRoom, tower.getCenter(), theta, CONE_HALFANGLE, tower.getRange());
 			parentRoom.addUnit(p1);
 			parentRoom.addUnit(p2);
 			parentRoom.addUnit(p3);
@@ -60,8 +59,6 @@ public class ConeFireStrategy implements TowerStrategy {
 				Collection<GameItem> zombies = tower.getParentRoom().getAllUnitsWithTag(Tag.ZOMBIE);
 				// deal damage
 				framesUntilDamage += Game.IDEAL_FPS / tower.getFireRate();
-
-				
 				
 				//loop through all the zombies
 				for(GameItem item : zombies) {
@@ -70,11 +67,7 @@ public class ConeFireStrategy implements TowerStrategy {
 					if(zombie.getPos().distance(tower.getCenter()) < tower.getRange())
 					{
 						//check if they within CONE_ANGLE/2
-						double zombieX = zombie.getPos().getX();
-						double zombieY = zombie.getPos().getY();
-						double y = Math.atan2(zombieY - towerY, zombieX - towerX);
-						
-						if (Math.abs(y - x) <= CONE_HALFANGLE) {
+						if (isZombieInAngle(theta, zombie.getCenter(), tower.getCenter(), CONE_HALFANGLE)) {
 							// damage them
 							zombie.reduceHealth(tower.getDamage());
 						}
@@ -82,6 +75,15 @@ public class ConeFireStrategy implements TowerStrategy {
 				}
 			}
 		}
+	}
+	
+	public static boolean isZombieInAngle(double angleCenter, Point2D zombie, Point2D towerCenter, double halfArc) {
+		double zombieX = zombie.getX();
+		double zombieY = zombie.getY();
+		double towerX = towerCenter.getX();
+		double towerY = towerCenter.getY();
+		double theta = Math.atan2(zombieY - towerY, zombieX - towerX);
+		return Math.abs(angleCenter - theta) <= halfArc;
 	}
 	
 	public boolean isZombieInCone(Point2D zombie, Point2D centerTarget, Point2D tower) {

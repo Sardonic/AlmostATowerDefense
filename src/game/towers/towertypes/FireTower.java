@@ -12,7 +12,7 @@ public class FireTower extends Tower {
 	public final static double FIRERATE = 45;
 	public final static int RANGE = 100;
 	public final static int SIZE = 15;
-	public final static int DAMAGE = 1;
+	public final static int DAMAGE = 3;
 	public final static int VALUE = 2000;
 	public final static Color COLOR = Color.ORANGE;
 
