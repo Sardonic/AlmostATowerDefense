@@ -7,7 +7,6 @@ import game.strategy.EnemyMovementStrategy;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
 public class Zombie implements GameItem, ZombieObservable {

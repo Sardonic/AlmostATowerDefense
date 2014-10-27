@@ -88,9 +88,5 @@ public class ConeFireStrategy implements TowerStrategy {
 		
 		return Math.abs(y - x) <= CONE_HALFANGLE;
 	}
-	
-	public Zombie getTarget() {
-		return target;
-	}
 
 }
