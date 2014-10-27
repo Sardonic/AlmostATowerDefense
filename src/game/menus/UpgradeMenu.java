@@ -22,6 +22,7 @@ public class UpgradeMenu implements MouseListener, GameItem {
 	private final static Color BOX_COLOR = Color.BLACK;
 	private final static Color UPGRADE_COLOR = Color.ORANGE;
 	private final static Color SELL_COLOR = Color.GREEN;
+	private final static Color INSUFFICIENT_FUNDS_COLOR = Color.GRAY;
 	private final static Font FONT = new Font("Courrier", Font.BOLD, 18);
 	private final static String UPGRADE_TEXT = "U";
 	private final static String SELL_TEXT = "$";
@@ -57,7 +58,11 @@ public class UpgradeMenu implements MouseListener, GameItem {
 
 		g.setFont(FONT);
 		
-		g.setColor(UPGRADE_COLOR);
+		if (tile.getTower() != null && parent.getUser().getMoney() >= tile.getTower().getMoneyValue()) {
+			g.setColor(UPGRADE_COLOR);
+		} else {
+			g.setColor(INSUFFICIENT_FUNDS_COLOR);
+		}
 		drawOffsetString(g, UPGRADE_TEXT, upgradeRect.getX(), upgradeRect.getY());
 		
 		g.setColor(SELL_COLOR);

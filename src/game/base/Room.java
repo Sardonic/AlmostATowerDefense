@@ -277,7 +277,7 @@ public class Room extends JPanel implements MouseListener {
 		return units;
 	}
 	
-	public boolean doesUnitExit(GameItem unit) {
+	public boolean doesUnitExist(GameItem unit) {
 		return units.contains(unit);
 	}
 	

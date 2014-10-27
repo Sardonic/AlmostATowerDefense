@@ -1,9 +1,8 @@
 package game.towers;
 
-import game.base.Game;
 import game.base.GameItem;
 import game.base.Room;
-import game.towers.projectiles.ProjectileFactory;
+import game.towers.strategy.TowerStrategy;
 import game.zombies.Zombie;
 
 import java.awt.Color;
@@ -20,7 +19,6 @@ public class Tower implements BaseTower {
 	private Point2D pos;
 	private Point2D center;
 	private double fireRate; // in shots/second (second = 60 frames)
-	private double framesUntilFire;
 	private int range;
 	private int damage;
 	private int width;
@@ -28,16 +26,14 @@ public class Tower implements BaseTower {
 	private int moneyValue;
 	private Color color;
 	private Room parentRoom;
-	private Zombie target;
-	private ProjectileFactory projectileFactory;
+	private TowerStrategy strategy;
 	private BufferedImage image;
 	
-	public Tower(Room parent, Point2D position, ProjectileFactory projectileFactory, double fireRate, int range, int width, int height, int damage, int moneyVal, Color color) {
+	public Tower(Room parent, Point2D position, TowerStrategy strategy, double fireRate, int range, int width, int height, int damage, int moneyVal, Color color) {
 		center = position;
-		this.projectileFactory = projectileFactory;
+		this.strategy = strategy;
 		this.pos = new Point2D.Double(position.getX() - width, position.getY() - height);
 		this.fireRate = fireRate;
-		this.framesUntilFire = 0;
 		this.range = range;
 		this.width = width;
 		this.height = height;
@@ -45,7 +41,6 @@ public class Tower implements BaseTower {
 		moneyValue = moneyVal;
 		this.color = color;
 		this.parentRoom = parent;
-		target = null;
 		try {
 			image = ImageIO.read(new File("Charizard.png"));
 		} catch (IOException e) {
@@ -61,28 +56,7 @@ public class Tower implements BaseTower {
 	}
 
 	public void update() {
-		if (target != null) {
-			if (target.getPos().distance(pos) > range) {
-				target = null;
-			} else if (target.getHealth() <= 0 || parentRoom.doesUnitExit(target)) {
-				target = null;
-			}
-		}
-		
-		if (target == null) {
-			target = acquireClosestZombie();
-		}
-		
-		if (framesUntilFire > 0) {
-			framesUntilFire--;
-		}
-		
-		if (target != null) {
-			if (framesUntilFire <= 0) {
-				parentRoom.addUnit(projectileFactory.makeProjectile(parentRoom, new Point2D.Double(center.getX(), center.getY()), target, damage));
-				framesUntilFire += Game.IDEAL_FPS / fireRate;
-			}
-		}
+		strategy.update(this);
 	}
 
 	public Zombie acquireClosestZombie() {
@@ -107,8 +81,6 @@ public class Tower implements BaseTower {
 	}
 
 	public void draw(Graphics g) {
-		//g.setColor(color);
-		//g.fillOval((int)pos.getX(), (int)pos.getY(), width, height);
 		g.setColor(Color.black);
 		g.drawOval((int)pos.getX() - (range) + (width / 2), (int)pos.getY() - (range) + (height / 2), range * 2, range * 2);
 		g.drawImage(image, (int)pos.getX(), (int)pos.getY(), width*2, height*2, null);
@@ -174,6 +146,17 @@ public class Tower implements BaseTower {
 	public void setMoneyValue(int value) {
 		moneyValue = value;
 	}
+	
+	public Room getParentRoom() {
+		return parentRoom;
+	}
 
+	public Point2D getCenter() {
+		return center;
+	}
+	
+	public void setStrategy(TowerStrategy strategy) {
+		this.strategy = strategy;
+	}
 
 }

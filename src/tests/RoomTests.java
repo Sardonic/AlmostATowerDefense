@@ -70,7 +70,7 @@ public class RoomTests {
 		
 		room.addAndRemoveUnits();
 		
-		assertTrue(room.doesUnitExit(zombie1));
-		assertFalse(room.doesUnitExit(zombie3));
+		assertTrue(room.doesUnitExist(zombie1));
+		assertFalse(room.doesUnitExist(zombie3));
 	}
 }

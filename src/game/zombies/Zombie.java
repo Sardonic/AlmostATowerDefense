@@ -7,6 +7,7 @@ import game.strategy.EnemyMovementStrategy;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
 public class Zombie implements GameItem, ZombieObservable {
@@ -45,6 +46,12 @@ public class Zombie implements GameItem, ZombieObservable {
 	
 	public Point2D getPos() {
 		return pos;
+	}
+	
+	public Point2D getCenter() {
+		double centerX = pos.getX() + width / 2;
+		double centerY = pos.getY() + height / 2;
+		return new Point2D.Double(centerX, centerY);
 	}
 
 	public void update() {
