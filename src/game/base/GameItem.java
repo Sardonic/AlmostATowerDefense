@@ -13,6 +13,7 @@ public interface GameItem {
 		ZOMBIE,
 		TOWER,
 		PROJECTILE,
-		MENU
+		MENU,
+		PARTICLE
 	}
 }

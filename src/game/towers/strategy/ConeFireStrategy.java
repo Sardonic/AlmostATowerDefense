@@ -8,6 +8,7 @@ import game.base.GameItem;
 import game.base.Room;
 import game.base.GameItem.Tag;
 import game.towers.Tower;
+import game.towers.particles.FireParticle;
 import game.zombies.Zombie;
 
 public class ConeFireStrategy implements TowerStrategy {
@@ -43,17 +44,24 @@ public class ConeFireStrategy implements TowerStrategy {
 		
 		if (target != null) {
 			// produce particles
+			double targetX = target.getPos().getX();
+			double targetY = target.getPos().getY();
+			double towerX = tower.getPos().getX();
+			double towerY = tower.getPos().getY();
+			double x = Math.atan2(targetY - towerY, targetX - towerX);
+			FireParticle p1 = new FireParticle(tower.getCenter(), x, CONE_HALFANGLE);
+			FireParticle p2 = new FireParticle(tower.getCenter(), x, CONE_HALFANGLE);
+			FireParticle p3 = new FireParticle(tower.getCenter(), x, CONE_HALFANGLE);
+			parentRoom.addUnit(p1);
+			parentRoom.addUnit(p2);
+			parentRoom.addUnit(p3);
 			
 			if (framesUntilDamage <= 0) {
 				Collection<GameItem> zombies = tower.getParentRoom().getAllUnitsWithTag(Tag.ZOMBIE);
 				// deal damage
 				framesUntilDamage += Game.IDEAL_FPS / tower.getFireRate();
 
-				double targetX = target.getPos().getX();
-				double targetY = target.getPos().getY();
-				double towerX = tower.getPos().getX();
-				double towerY = tower.getPos().getY();
-				double x = Math.atan2(targetY - towerY, targetX - towerX);
+				
 				
 				//loop through all the zombies
 				for(GameItem item : zombies) {
