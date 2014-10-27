@@ -125,7 +125,7 @@ public class Game extends JFrame {
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new Game(512, 512).init();
+				new Game(512, 542).init();
 			}
 		});
 	}

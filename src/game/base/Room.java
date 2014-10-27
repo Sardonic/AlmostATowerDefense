@@ -5,9 +5,10 @@ import game.grid.Grid;
 import game.grid.Path;
 import game.grid.Tile;
 import game.menus.PurchaseMenu;
+import game.menus.UpgradeMenu;
 import game.towers.BaseTower;
 import game.towers.TowerFactory;
-import game.towers.upgrades.RangeUpgrade;
+import game.towers.upgrades.*;
 import game.wave.WaveManager;
 import game.zombies.Zombie;
 
@@ -18,6 +19,7 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JPanel;
 
@@ -46,9 +48,9 @@ public class Room extends JPanel implements MouseListener {
 		makePath();
 		
 		user = new User();
-		units = new ArrayList<GameItem>();
-		unitsToAddAtEndOfFrame = new ArrayList<GameItem>();
-		unitsToRemoveAtEndOfFrame = new ArrayList<GameItem>();
+		units = new CopyOnWriteArrayList<GameItem>();
+		unitsToAddAtEndOfFrame = new CopyOnWriteArrayList<GameItem>();
+		unitsToRemoveAtEndOfFrame = new CopyOnWriteArrayList<GameItem>();
 		waveManager = new WaveManager(this);
 		
 		isMenuOpen = false;
@@ -102,26 +104,21 @@ public class Room extends JPanel implements MouseListener {
 	
 	private void openBuyMenu(int x, int y) {
 		if (!isMenuOpen) {
-			GameItem purchaseMenu = new PurchaseMenu(this, grid.getTile(x, y).getULCorner());
+			GameItem purchaseMenu = new PurchaseMenu(this, grid.getTile(x, y));
 			unitsToAddAtEndOfFrame.add(purchaseMenu);
+			isMenuOpen = true;
 		}
 	}
 	
 	private void openUpgradeMenu(int x, int y) {
-		//TODO upgrade menu
 		if (!isMenuOpen) {
-			int towerValue = grid.getTile(x, y).getTower().getMoneyValue();
-			
-			if(user.getMoney() > towerValue)
-			{
-				upgradeTower(x, y);
-				user.spendMoney(towerValue);
-			}
+			GameItem upgradeMenu = new UpgradeMenu(this, grid.getTile(x, y));
+			unitsToAddAtEndOfFrame.add(upgradeMenu);
+			isMenuOpen = true;
 		}
 	}
 	
-	public void placeMachineGunTower(int x, int y) {
-		Tile tile = grid.getTile(x, y);
+	public void placeMachineGunTower(Tile tile) {
 		if (tile.isEmpty()) {
 			BaseTower tower = TowerFactory.makeMachineGunTower(this, tile.getCenter());
 			
@@ -131,8 +128,13 @@ public class Room extends JPanel implements MouseListener {
 		}
 	}
 	
-	public void placeRocketTower(int x, int y) {
+	public void placeMachineGunTower(int x, int y) {
 		Tile tile = grid.getTile(x, y);
+		
+		placeMachineGunTower(tile);
+	}
+	
+	public void placeRocketTower(Tile tile) {
 		if (tile.isEmpty()) {
 			BaseTower tower = TowerFactory.makeRocketTower(this, tile.getCenter());
 			
@@ -142,8 +144,13 @@ public class Room extends JPanel implements MouseListener {
 		}
 	}
 	
-	public void placeFireTower(int x, int y) {
+	public void placeRocketTower(int x, int y) {
 		Tile tile = grid.getTile(x, y);
+		
+		placeRocketTower(tile);
+	}
+	
+	public void placeFireTower(Tile tile) {
 		if (tile.isEmpty()) {
 			BaseTower tower = TowerFactory.makeFireTower(this, tile.getCenter());
 			
@@ -153,14 +160,20 @@ public class Room extends JPanel implements MouseListener {
 		}
 	}
 	
-	public void upgradeTower(int x, int y) {
-		//TODO differentiate between upgrades
+	public void placeFireTower(int x, int y) {
 		Tile tile = grid.getTile(x, y);
+		
+		placeFireTower(tile);
+	}
+	
+	public void upgradeTower(Tile tile) {
 		BaseTower tower = tile.getTower();
 		
 		if(tile.getTower() != null) {//should never fail but just in case
 			units.remove(tower);
 			tower = new RangeUpgrade(tower);
+			tower = new DamageUpgrade(tower);
+			tower = new FireRateUpgrade(tower);
 			tile.setTower(tower);
 			units.add(tower);
 		} else {
@@ -169,17 +182,29 @@ public class Room extends JPanel implements MouseListener {
 		}
 	}
 	
-	public void sellTower(int x, int y) {
+	public void upgradeTower(int x, int y) {
 		Tile tile = grid.getTile(x, y);
 		
+		upgradeTower(tile);
+	}
+	
+	public void sellTower(Tile tile) {
 		if(tile.getTower() != null) {//should never fail but just in case
-			unitsToRemoveAtEndOfFrame.add(tile.getTower());
+			BaseTower tower = tile.getTower();
+			user.giveMoney(tower.getMoneyValue() / 3);
+			unitsToRemoveAtEndOfFrame.add(tower);
 			tile.setTower(null);
 			tile.setEmpty(true);
 		} else {
 			//throw error
 			System.err.println("Error There was no tower there.");
 		}
+	}
+	
+	public void sellTower(int x, int y) {
+		Tile tile = grid.getTile(x, y);
+		
+		sellTower(tile);
 	}
 
 	public void addUnit(GameItem unit) {

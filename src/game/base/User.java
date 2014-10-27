@@ -49,6 +49,10 @@ public class User implements ZombieObserver {
 		money -= moneySpent;
 	}
 	
+	public void giveMoney(int moneyGained) {
+		money += moneyGained;
+	}
+	
 	public int getHealth() {
 		return health;
 	}
